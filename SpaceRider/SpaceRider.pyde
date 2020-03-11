@@ -1,8 +1,12 @@
 #SpaceRider
 
+import math
+
+
 #PRINCIAL CLASS
 class Player():
     #Set PRINCIPAL values ----> Position, Activation keys and color
+    derweg = []
     x = ""
     y = ""
     tasten = ""
@@ -19,40 +23,55 @@ class Player():
         self.x = x
         self.y = y
     
+    def getpos(self):
+        return self.x, self.y
     
-    def bewegung(self, key):
+    def keyboardbewegung(self, key):
         if key == self.tasten[0]:
-            print key
             self.x = self.x - 1
-        if key == self.tasten[1]:
-            print key
+        if key == self.tasten[1]:           
             self.y = self.y - 1
         if key == self.tasten[2]:
-            print key
             self.x = self.x + 1
         if key == self.tasten[3]:
-            print type(key)
             self.y = self.y + 1
-        if type(key) == "unicode":
-            self.present(mouseX, mouseY)
         
         self.present(self.x, self.y)
-        #print type(key)
-            
+        self.derweg.append([self.x, self.y])
+        print self.derweg
+    
+    def mousebewegung(self, v):
+        #KATETEN
+        varx = mouseX - self.x 
+        vary = mouseY - self.y
+        distance = math.sqrt(varx**2 + vary**2)
+        
+        schrittn = distance / v
+        xschritt = varx/v
+        yschritt = vary/v
+        
+        self.x = self.x + xschritt
+        self.y = self.y + yschritt
+        self.present(self.x, self.y)
+        self.derweg.append([self.x, self.y])
+        print self.derweg
+                
 Yassin = Player("a w d s", (255, 0, 0))
-Esteban = Player("j i l k", (0, 0, 255))
+Esteban = Player("", (0, 0, 255))
 
 def setup():
     size(500, 500)
     background(255)
     
     Yassin.present(height,0 )
-    Esteban.present(0, height)
+    Esteban.present(height, -width)
     
     
 def draw():
+    Esteban.mousebewegung(1)
     if keyPressed == True:
         print "--"
-        Yassin.bewegung(key)
-    Esteban.bewegung(key)
+        Yassin.keyboardbewegung(key)
         
+    if Yassin.getpos() == Esteban.getpos():
+        print "VERLOREN"
